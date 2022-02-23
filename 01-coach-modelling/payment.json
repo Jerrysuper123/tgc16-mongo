@@ -1,0 +1,19 @@
+[
+    {
+        "id": 34353423,
+        "student":{
+            "student_id" : 101,
+            "name": "Tan ah kow"
+        },
+        "parent":{
+            "parent_id": 452,
+            "name": "Ta ah pa"
+        },
+        "session":{
+            "session_id":"12345x",
+            "date": "2022-6-29",
+            "time": 1600,
+            "location": "Yishun swimming pool"
+        }
+    }
+]

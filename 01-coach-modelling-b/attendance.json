@@ -1,0 +1,16 @@
+[
+
+    {
+        "session_id":991,
+        "student_id":101
+    },
+    {
+        "session_id":991,
+        "student_id":102
+    },
+    {
+        "session_id":991,
+        "student_id":103
+    }
+]
+// why the structure is like this to help fast retrieval
