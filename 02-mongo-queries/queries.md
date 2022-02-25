@@ -40,8 +40,8 @@ first argument {}/filter to get all the docs, only interested in names and beds 
 name: 1  -  1 means true, -1 means false
 ```
 db.listingsAndReviews.find({},{
-    'name',1,
-    'beds',1
+    'name':1,
+    'beds':1
 } ).pretty().limit(5)
 ```
 
@@ -198,7 +198,7 @@ db.listingsAndReviews.find({
 ).pretty();
 ```
 
-Find all docs that has brazil or canada which must have 3 rooms
+Find all docs that has brazil  must have 3 rooms or canadda
 
 ```
 db.listingsAndReviews.find({
@@ -219,4 +219,69 @@ db.listingsAndReviews.find({
         "bedrooms":1
     }
 ).pretty();
+```
+
+## Fin all listings that has been reviewed by leslie
+In other words, we want to shortlist documents by going through an array of an objects
+
+Find reviews array, where each elem match reviewer_name is Leslie
+Return the matched element, where review match
+```
+db.listingsAndReviews.find({
+    "reviews":{
+        "$elemMatch":{
+            "reviewer_name":"Leslie"
+        }
+    }
+},{
+    "name":1,
+    "reviews.$":1
+}).pretty()
+```
+
+## Match by date
+The adate is in ISO format: YYYY-MM-DD and we need to wrap it with a function
+Find all reviews before 2019.
+```
+db.listingsAndReviews.find({
+    "first_review":{
+        "$lte": ISODate("2018-12-31")
+    }
+},{
+    "name":1,
+    "first_review":1
+}).pretty()
+```
+
+## Find by string pattern (i.e. regular expressions)
+Find all the listings where the name includes the word "spacious"
+Option i means case insensitive
+```
+db.listingsAndReviews.find({
+    "name":{
+        "$regex": "spacious", "$options":"i"
+    }
+},{
+    "name":1
+})
+```
+
+## Counting results
+count all the number of listings
+```
+db.listingsAndReviews.find().count()
+```
+
+## find all listings that has 6 or more amenities
+check if the 6th elements exists (index 5 is the 6th element)
+amenities is an array
+```
+db.listingsAndReviews.find({
+    "amenities.5":{
+        "$exists":true
+    }
+},{
+    "name":1,
+    "amenities":1
+}).pretty()
 ```
