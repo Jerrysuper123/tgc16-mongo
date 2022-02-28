@@ -10,6 +10,8 @@ require("dotenv").config();
 
 const express = require("express");
 const hbs = require("hbs");
+
+//this helps to get handlebars helpers to be used later
 const helpers = require('handlebars-helpers')(
     {
         'handlebars': hbs.handlebars
@@ -27,6 +29,10 @@ wax.on(hbs.handlebars);
 wax.setLayoutPath("./views/layouts");
 //import in ObjectId
 // const ObjectId = require("")
+
+//use collection name easy to manage than hard-coded strings
+let COLLECTION_NAME = "food_records";
+
 
 async function main() {
     // connect to the mongodb
@@ -85,7 +91,8 @@ async function main() {
         //3, insert one doc intot the collection
         await db.collection("food_records").insertOne(foodDocument);
         //must always return sth, otherwise it will cause an error
-        res.send("info received");
+        // res.send("info received");
+        res.redirect("/");
     })
 
     app.get("/food/:food_id/edit", async function(req, res){
@@ -97,6 +104,46 @@ async function main() {
         res.render("edit_food",{
             "food": foodDoc
         });
+    })
+
+    app.post("/food/:food_id/edit", async function(req, res){
+        let foodId = req.params.food_id;
+
+        let tags = req.body.tags || [];
+        tags = Array.isArray(tags) ? tags : [tags];
+
+        let foodDocument = {
+            'name' : req.body.foodName,
+            "calories" : req.body.calories,
+            "tags" : tags
+        }
+        await getDB().collection(COLLECTION_NAME).updateOne({
+            "_id": ObjectId(foodId)
+        },{
+            "$set":{
+                ...foodDocument
+            }
+        })
+
+        res.redirect("/");
+    })
+
+    //how to delete the food record
+    app.get("/food/:food_id/delete", async function(req, res){
+        let foodRecord = await getDB().collection(COLLECTION_NAME).findOne({
+            "_id" : ObjectId(req.params.food_id)
+        });
+        res.render("delete_food.hbs",{
+            foodRecord
+        })
+    })
+
+    app.post("/food/:food_id/delete", async function(req,res){
+        await getDB().collection(COLLECTION_NAME).deleteOne({
+            "_id": ObjectId(req.params.food_id)
+        })
+
+        res.redirect("/");
     })
 }
 

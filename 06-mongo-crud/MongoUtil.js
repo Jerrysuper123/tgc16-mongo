@@ -6,6 +6,7 @@ let _db;
 
 async function connect(uri, dbname){
     const client = await MongoClient.connect(uri , {
+        // use mongo new connection engine, used to have many versions before.                                                                                                                                                                                                                                                                              
         useUnifiedTopology: true,
         useNewUrlParser: true
     })
